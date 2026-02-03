@@ -213,36 +213,35 @@ git diff '<start>~1..<end>'
 1. **获取修复文件列表**
    - 收集本次修复过程中修改的所有文件路径
 
-2. **动态生成提交信息**
-   - 根据本次实际修复的问题类型自动生成
-   - 格式：`fix: code review - [实际修复的问题类型]`
-   
-   **生成规则：**
-   - 单个问题：`fix: code review - 魔法数字`
-   - 多个同类问题：`fix: code review - 魔法数字 x 3`
-   - 多种问题：`fix: code review - 魔法数字, 调试日志, DRY原则`
-
-3. **执行 git 命令**
+2. **分析实际修改内容**
    ```bash
-   # 只添加本次修复修改的文件
-   git add <file1> <file2> ...
-   
-   # 使用动态生成的提交信息
-   git commit -m "<动态生成的提交信息>"
+   # 获取本次修改的 diff
+   git diff <修复的文件列表>
    ```
 
-4. **显示提交结果**
+3. **根据 diff 内容动态生成提交信息**
+   - 分析 `git diff` 输出，理解实际修改了什么
+   - 根据修改内容生成简洁、准确的提交信息
+   - 遵循 Conventional Commits 格式
+
+4. **执行 git 命令**
+   ```bash
+   git add <修复的文件列表>
+   git commit -m "<根据 diff 动态生成的提交信息>"
+   ```
+
+5. **显示提交结果**
    ```markdown
    ✅ 已提交
    
-   提交信息: <动态生成的提交信息>
-   修改文件: <实际修改的文件列表>
+   提交信息: <根据实际修改内容生成>
+   修改文件: <文件列表>
    ```
 
-**示例：**
-- 修复了 2 个魔法数字问题 → `fix: code review - 魔法数字 x 2`
-- 修复了 1 个调试日志问题 → `fix: code review - 调试日志`
-- 修复了魔法数字和调试日志 → `fix: code review - 魔法数字, 调试日志`
+**提交信息生成原则：**
+- 通过 `git diff` 分析实际代码变更
+- 提取关键修改点（如：添加常量、删除日志、提取方法等）
+- 生成简洁准确的描述，而非固定模板
 
 ## 问题严重程度
 
@@ -290,7 +289,6 @@ AI: [自动修复所有必须修复的问题]
 AI: [审查报告]
     1. 魔法数字 - AddressService.java:45
     2. 调试日志 - UserController.java:78
-    3. DRY原则 - OrderService.java:23
 
 用户: 1,2
 AI: ✅ 修复完成
@@ -299,12 +297,13 @@ AI: ✅ 修复完成
     💡 输入 `0` 可提交本次修复的文件
 
 用户: 0
-AI: ✅ 已提交
-    提交信息: fix: code review - 魔法数字, 调试日志
+AI: [执行 git diff 分析修改内容]
+    ✅ 已提交
+    提交信息: fix: add MAX_ADDRESS_COUNT constant, remove debug println
     修改文件: AddressService.java, UserController.java
 ```
 
-> 注意：提交信息根据实际修复的问题类型动态生成，不是固定文本。
+> 提交信息通过 `git diff` 分析实际代码变更后动态生成，描述真实的修改内容。
 
 ## 审查规则
 
