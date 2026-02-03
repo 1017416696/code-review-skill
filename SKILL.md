@@ -222,7 +222,8 @@ git diff '<start>~1..<end>'
 3. **根据 diff 内容动态生成提交信息**
    - 分析 `git diff` 输出，理解实际修改了什么
    - 根据修改内容生成简洁、准确的提交信息
-   - 遵循 Conventional Commits 格式
+   - 遵循 Conventional Commits 格式，使用中文描述
+   - 格式：`<type>: <中文描述>`
 
 4. **执行 git 命令**
    ```bash
@@ -241,7 +242,12 @@ git diff '<start>~1..<end>'
 **提交信息生成原则：**
 - 通过 `git diff` 分析实际代码变更
 - 提取关键修改点（如：添加常量、删除日志、提取方法等）
-- 生成简洁准确的描述，而非固定模板
+- 使用中文描述修改内容
+- 遵循 Conventional Commits 格式：`<type>: <中文描述>`
+- 示例：
+  - `fix: 将魔法数字100替换为MAX_COUNT常量`
+  - `fix: 移除UserController中的调试日志`
+  - `refactor: 提取重复代码为validateAddress方法`
 
 ## 问题严重程度
 
@@ -299,11 +305,11 @@ AI: ✅ 修复完成
 用户: 0
 AI: [执行 git diff 分析修改内容]
     ✅ 已提交
-    提交信息: fix: add MAX_ADDRESS_COUNT constant, remove debug println
+    提交信息: fix: 添加地址数量上限常量，移除调试日志
     修改文件: AddressService.java, UserController.java
 ```
 
-> 提交信息通过 `git diff` 分析实际代码变更后动态生成，描述真实的修改内容。
+> 提交信息通过 `git diff` 分析实际代码变更后动态生成，使用中文描述真实的修改内容。
 
 ## 审查规则
 
