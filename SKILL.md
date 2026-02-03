@@ -211,30 +211,38 @@ git diff '<start>~1..<end>'
 用户输入 `0` 后，自动执行以下操作：
 
 1. **获取修复文件列表**
-   - 收集本次修复过程中修改的所有文件
+   - 收集本次修复过程中修改的所有文件路径
 
-2. **生成提交信息**
-   - 格式：`fix: code review - [修复的问题类型列表]`
-   - 示例：`fix: code review - 魔法数字, 调试日志`
+2. **动态生成提交信息**
+   - 根据本次实际修复的问题类型自动生成
+   - 格式：`fix: code review - [实际修复的问题类型]`
+   
+   **生成规则：**
+   - 单个问题：`fix: code review - 魔法数字`
+   - 多个同类问题：`fix: code review - 魔法数字 x 3`
+   - 多种问题：`fix: code review - 魔法数字, 调试日志, DRY原则`
 
 3. **执行 git 命令**
    ```bash
-   git add [修复的文件列表]
-   git commit -m "[自动生成的提交信息]"
+   # 只添加本次修复修改的文件
+   git add <file1> <file2> ...
+   
+   # 使用动态生成的提交信息
+   git commit -m "<动态生成的提交信息>"
    ```
 
 4. **显示提交结果**
    ```markdown
    ✅ 已提交
    
-   提交信息: fix: code review - 魔法数字, 调试日志
-   修改文件: AddressService.java, UserController.java
+   提交信息: <动态生成的提交信息>
+   修改文件: <实际修改的文件列表>
    ```
 
-**提交信息生成规则：**
-- 如果只修复了一个问题：`fix: code review - [问题类型]`
-- 如果修复了多个同类问题：`fix: code review - [问题类型] x N`
-- 如果修复了多种问题：`fix: code review - [问题类型1], [问题类型2]`
+**示例：**
+- 修复了 2 个魔法数字问题 → `fix: code review - 魔法数字 x 2`
+- 修复了 1 个调试日志问题 → `fix: code review - 调试日志`
+- 修复了魔法数字和调试日志 → `fix: code review - 魔法数字, 调试日志`
 
 ## 问题严重程度
 
@@ -279,10 +287,15 @@ AI: [自动修复所有必须修复的问题]
 
 ```
 用户: review abc1234
-AI: [审查报告，列出问题 1-3]
+AI: [审查报告]
+    1. 魔法数字 - AddressService.java:45
+    2. 调试日志 - UserController.java:78
+    3. DRY原则 - OrderService.java:23
 
 用户: 1,2
-AI: [修复问题 1 和 2]
+AI: ✅ 修复完成
+    - 问题 1: 魔法数字 - AddressService.java:45 ✅
+    - 问题 2: 调试日志 - UserController.java:78 ✅
     💡 输入 `0` 可提交本次修复的文件
 
 用户: 0
@@ -290,6 +303,8 @@ AI: ✅ 已提交
     提交信息: fix: code review - 魔法数字, 调试日志
     修改文件: AddressService.java, UserController.java
 ```
+
+> 注意：提交信息根据实际修复的问题类型动态生成，不是固定文本。
 
 ## 审查规则
 
